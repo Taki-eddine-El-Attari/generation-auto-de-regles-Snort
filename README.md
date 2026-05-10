@@ -2,13 +2,6 @@
 
 > **Devoir 3 — NLP 2026 | Sujet 2 : Génération de règles SNORT**
 
-| | |
-|---|---|
-| **Encadrante** | Ikram Benabdelouahab |
-| **Auteur** | El Attari Taki Eddine |
-| **Année** | 2025 – 2026 |
-| **Contexte** | Master NLP — Génération de règles de détection réseau |
-
 ---
 
 ## 📌 Description du projet
@@ -197,3 +190,11 @@ Le notebook `02` génère les fichiers FAISS nécessaires à tous les notebooks 
 ## 📈 Conclusion
 
 Ce projet démontre que l'injection de contexte via RAG améliore significativement la génération de règles Snort par un LLM de taille réduite (1.5B paramètres). Le principal goulot d'étranglement n'est pas le retrieval — dont la qualité est bonne dès le RAG Classique — mais bien la **capacité du LLM à respecter une syntaxe formelle stricte**. Un LLM plus puissant (7B+) ou un fine-tuning sur des règles Snort annotées constitueraient les pistes d'amélioration les plus prometteuses.
+
+---
+
+| | |
+|---|---|
+| **Encadrante** | Ikram Benabdelouahab |
+| **Auteur** | El Attari Taki Eddine |
+| **Année** | 2025 – 2026 |

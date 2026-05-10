@@ -77,7 +77,6 @@ Le protocole TCP domine largement le dataset (39 entrées sur 50), avec une conc
 | Rôle | Modèle |
 |---|---|
 | LLM principal | `Qwen/Qwen2-1.5B-Instruct` (local, GPU) |
-| LLM hybride | `google/flan-t5-base` |
 | Embedding | `sentence-transformers/all-mpnet-base-v2` |
 | Re-ranking | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
 | Index vectoriel | FAISS `IndexFlatIP` (similarité cosine) |

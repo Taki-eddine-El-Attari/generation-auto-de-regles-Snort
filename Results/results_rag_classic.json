@@ -1,0 +1,142 @@
+[
+  {
+    "query": "Détecter un scan de ports SYN sur un serveur web",
+    "method": "rag_classic",
+    "retrieved_docs": [
+      {
+        "description": "Détection d'un scan de ports SYN sur un serveur web",
+        "attack_type": "Port Scan",
+        "score": 0.9465,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SYN Scan détecté\"; flags:S; threshold:type both, track by_src, count 20, seconds 5; sid:1000001; rev:1;)"
+      },
+      {
+        "description": "Scan de ports FTP pour recherche de services ouverts",
+        "attack_type": "Port Scan",
+        "score": 0.7317,
+        "snort_rule": "alert tcp any any -> $HOME_NET 21 (msg:\"FTP Port Scan\"; flags:S; threshold:type both, track by_src, count 5, seconds 10; sid:1000005; rev:1;)"
+      },
+      {
+        "description": "Détection d'un scan XMAS (flags FIN+PSH+URG)",
+        "attack_type": "Port Scan",
+        "score": 0.7099,
+        "snort_rule": "alert tcp any any -> $HOME_NET any (msg:\"XMAS Scan\"; flags:FPU; sid:1000046; rev:1;)"
+      }
+    ],
+    "response": "alert udp any any -> $TARGET_IP anything (msg=\"Syn Scan detected\" severity=critical);",
+    "retrieval_time": 0.033,
+    "generation_time": 26.197,
+    "total_time": 26.23
+  },
+  {
+    "query": "Bloquer une attaque par force brute sur le protocole SSH",
+    "method": "rag_classic",
+    "retrieved_docs": [
+      {
+        "description": "Tentative de connexion SSH par brute force",
+        "attack_type": "Brute Force",
+        "score": 0.8239,
+        "snort_rule": "alert tcp any any -> $HOME_NET 22 (msg:\"SSH Brute Force\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000003; rev:1;)"
+      },
+      {
+        "description": "Tentative de force brute sur authentification LDAP",
+        "attack_type": "Brute Force",
+        "score": 0.5722,
+        "snort_rule": "alert tcp any any -> $HOME_NET 389 (msg:\"LDAP Brute Force\"; threshold:type both, track by_src, count 10, seconds 30; sid:1000036; rev:1;)"
+      },
+      {
+        "description": "Trafic suspect vers le port Telnet depuis l'extérieur",
+        "attack_type": "Brute Force",
+        "score": 0.5714,
+        "snort_rule": "alert tcp any any -> $HOME_NET 23 (msg:\"Telnet Access Suspect\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000019; rev:1;)"
+      }
+    ],
+    "response": "alert udp any any -> $LOCAL_NET ssh (msg=\"Bruteforce SSH access detected\" severity=critical);",
+    "retrieval_time": 0.036,
+    "generation_time": 26.7,
+    "total_time": 26.735
+  },
+  {
+    "query": "Identifier une injection SQL dans une requête HTTP",
+    "method": "rag_classic",
+    "retrieved_docs": [
+      {
+        "description": "Injection SQL dans une requête HTTP GET",
+        "attack_type": "SQL Injection",
+        "score": 0.8617,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SQL Injection GET\"; content:\"GET\"; http_method; content:\"union+select\"; nocase; http_uri; sid:1000004; rev:1;)"
+      },
+      {
+        "description": "Injection XSS dans un formulaire HTTP POST",
+        "attack_type": "XSS",
+        "score": 0.5935,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"XSS Injection\"; content:\"POST\"; http_method; content:\"<script>\"; nocase; http_client_body; sid:1000028; rev:1;)"
+      },
+      {
+        "description": "Accès suspect à un fichier de configuration sensible",
+        "attack_type": "Web Attack",
+        "score": 0.5419,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Accès fichier config\"; content:\"GET\"; http_method; content:\".env\"; http_uri; nocase; sid:1000025; rev:1;)"
+      }
+    ],
+    "response": "alert udp any any -- dport 80 -j EQ snort.rule.sql_injection_rule",
+    "retrieval_time": 0.026,
+    "generation_time": 25.494,
+    "total_time": 25.519
+  },
+  {
+    "query": "Détecter un ransomware qui chiffre des fichiers via SMB",
+    "method": "rag_classic",
+    "retrieved_docs": [
+      {
+        "description": "Détection d'un ransomware chiffrant les fichiers réseau",
+        "attack_type": "Ransomware",
+        "score": 0.8345,
+        "snort_rule": "alert tcp $HOME_NET any -> $HOME_NET 445 (msg:\"Ransomware SMB Encryption\"; content:\"|FF 53 4D 42 25|\"; threshold:type both, track by_src, count 100, seconds 10; sid:1000040; rev:1;)"
+      },
+      {
+        "description": "Détection d'un ver réseau se propageant via SMB",
+        "attack_type": "Worm",
+        "score": 0.621,
+        "snort_rule": "alert tcp any any -> $HOME_NET 445 (msg:\"SMB Worm Propagation\"; content:\"|FF 53 4D 42|\"; depth:4; sid:1000021; rev:1;)"
+      },
+      {
+        "description": "Téléchargement d'un exécutable via HTTP non chiffré",
+        "attack_type": "Malware",
+        "score": 0.4493,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Téléchargement EXE HTTP\"; content:\"MZ\"; within:2; depth:2; content:\".exe\"; nocase; http_uri; sid:1000010; rev:1;)"
+      }
+    ],
+    "response": "alert udp any any -> port 445 protocol smb msg=\"Ransomware SMB Chaining\" severity high time \"60s\" source-dst-count=100 sink=detect snort.rule_id=1000040 redirect=yes priority=high",
+    "retrieval_time": 0.044,
+    "generation_time": 34.087,
+    "total_time": 34.131
+  },
+  {
+    "query": "Repérer une exfiltration de données via le protocole DNS",
+    "method": "rag_classic",
+    "retrieved_docs": [
+      {
+        "description": "Détection d'exfiltration de données via DNS",
+        "attack_type": "Data Exfiltration",
+        "score": 0.8311,
+        "snort_rule": "alert udp $HOME_NET any -> any 53 (msg:\"DNS Data Exfiltration\"; content:\"TXT\"; threshold:type both, track by_src, count 50, seconds 10; sid:1000017; rev:1;)"
+      },
+      {
+        "description": "Attaque par amplification DNS (DNS Amplification)",
+        "attack_type": "DDoS",
+        "score": 0.653,
+        "snort_rule": "alert udp any any -> $HOME_NET 53 (msg:\"DNS Amplification Attack\"; content:\"|00 00 FF 00 01|\"; depth:5; offset:4; sid:1000014; rev:1;)"
+      },
+      {
+        "description": "Requête DNS vers domaine malveillant connu",
+        "attack_type": "Malware",
+        "score": 0.6499,
+        "snort_rule": "alert udp $HOME_NET any -> any 53 (msg:\"DNS Malveillant\"; content:\"malware-c2.ru\"; nocase; sid:1000034; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any => any port 53 protocol dns (content \"data exfil\" or msgstring \"Data Exfiltration\") severity medium timeout infinite state add down reset delay 60",
+    "retrieval_time": 0.033,
+    "generation_time": 30.64,
+    "total_time": 30.673
+  }
+]

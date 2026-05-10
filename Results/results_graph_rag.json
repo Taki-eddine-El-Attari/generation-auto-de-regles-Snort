@@ -1,0 +1,220 @@
+[
+  {
+    "query": "Détecter un scan de ports SYN sur un serveur web",
+    "method": "graph_rag",
+    "seed_docs": [
+      {
+        "idx": 0,
+        "score": 0.9465242028236389
+      },
+      {
+        "idx": 4,
+        "score": 0.7316734790802002
+      }
+    ],
+    "graph_docs": [
+      {
+        "node": "doc_0",
+        "description": "Détection d'un scan de ports SYN sur un serveur web",
+        "attack_type": "Port Scan",
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SYN Scan détecté\"; flags:S; threshold:type both, track by_src, count 20, seconds 5; sid:1000001; rev:1;)"
+      },
+      {
+        "node": "doc_4",
+        "description": "Scan de ports FTP pour recherche de services ouverts",
+        "attack_type": "Port Scan",
+        "snort_rule": "alert tcp any any -> $HOME_NET 21 (msg:\"FTP Port Scan\"; flags:S; threshold:type both, track by_src, count 5, seconds 10; sid:1000005; rev:1;)"
+      },
+      {
+        "node": "doc_28",
+        "description": "Scan UDP sur plage de ports pour services exposés",
+        "attack_type": "Port Scan",
+        "snort_rule": "alert udp any any -> $HOME_NET any (msg:\"UDP Port Scan\"; threshold:type both, track by_src, count 50, seconds 5; sid:1000029; rev:1;)"
+      },
+      {
+        "node": "doc_45",
+        "description": "Détection d'un scan XMAS (flags FIN+PSH+URG)",
+        "attack_type": "Port Scan",
+        "snort_rule": "alert tcp any any -> $HOME_NET any (msg:\"XMAS Scan\"; flags:FPU; sid:1000046; rev:1;)"
+      }
+    ],
+    "entity_context": "SEVERITY: medium | PROTOCOL: TCP | ATTACK: Port Scan | SEVERITY: low",
+    "response": "alert tcp any any -> $LOCALHOST 80 (msg=\"Syn Scan detected\" priority=high)",
+    "faiss_time": 0.039,
+    "graph_time": 0.0,
+    "generation_time": 30.832,
+    "total_time": 30.871
+  },
+  {
+    "query": "Bloquer une attaque par force brute sur le protocole SSH",
+    "method": "graph_rag",
+    "seed_docs": [
+      {
+        "idx": 2,
+        "score": 0.8239260911941528
+      },
+      {
+        "idx": 35,
+        "score": 0.5721926093101501
+      }
+    ],
+    "graph_docs": [
+      {
+        "node": "doc_35",
+        "description": "Tentative de force brute sur authentification LDAP",
+        "attack_type": "Brute Force",
+        "snort_rule": "alert tcp any any -> $HOME_NET 389 (msg:\"LDAP Brute Force\"; threshold:type both, track by_src, count 10, seconds 30; sid:1000036; rev:1;)"
+      },
+      {
+        "node": "doc_2",
+        "description": "Tentative de connexion SSH par brute force",
+        "attack_type": "Brute Force",
+        "snort_rule": "alert tcp any any -> $HOME_NET 22 (msg:\"SSH Brute Force\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000003; rev:1;)"
+      },
+      {
+        "node": "doc_10",
+        "description": "Tentative de connexion RDP depuis une IP externe suspecte",
+        "attack_type": "Brute Force",
+        "snort_rule": "alert tcp any any -> $HOME_NET 3389 (msg:\"RDP Brute Force\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000011; rev:1;)"
+      },
+      {
+        "node": "doc_25",
+        "description": "Tentative de connexion SMTP avec authentification répétée",
+        "attack_type": "Brute Force",
+        "snort_rule": "alert tcp any any -> $HOME_NET 25 (msg:\"SMTP Auth Brute Force\"; content:\"AUTH LOGIN\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000026; rev:1;)"
+      },
+      {
+        "node": "doc_18",
+        "description": "Trafic suspect vers le port Telnet depuis l'extérieur",
+        "attack_type": "Brute Force",
+        "snort_rule": "alert tcp any any -> $HOME_NET 23 (msg:\"Telnet Access Suspect\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000019; rev:1;)"
+      }
+    ],
+    "entity_context": "SEVERITY: high | ATTACK: Brute Force | PROTOCOL: TCP",
+    "response": "alert udp any any -> $LOCALHOST 22 (msg=\"Brute Force Attack on SSH\" priority=high)",
+    "faiss_time": 0.055,
+    "graph_time": 0.0,
+    "generation_time": 36.976,
+    "total_time": 37.031
+  },
+  {
+    "query": "Identifier une injection SQL dans une requête HTTP",
+    "method": "graph_rag",
+    "seed_docs": [
+      {
+        "idx": 3,
+        "score": 0.8616533279418945
+      },
+      {
+        "idx": 27,
+        "score": 0.5934689044952393
+      }
+    ],
+    "graph_docs": [
+      {
+        "node": "doc_3",
+        "description": "Injection SQL dans une requête HTTP GET",
+        "attack_type": "SQL Injection",
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SQL Injection GET\"; content:\"GET\"; http_method; content:\"union+select\"; nocase; http_uri; sid:1000004; rev:1;)"
+      },
+      {
+        "node": "doc_27",
+        "description": "Injection XSS dans un formulaire HTTP POST",
+        "attack_type": "XSS",
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"XSS Injection\"; content:\"POST\"; http_method; content:\"<script>\"; nocase; http_client_body; sid:1000028; rev:1;)"
+      }
+    ],
+    "entity_context": "ATTACK: XSS | SEVERITY: critical | SEVERITY: medium | PROTOCOL: TCP | ATTACK: SQL Injection",
+    "response": "alert tcp any any -> $LOCAL_NETWORK port \"56\" proto tcp udp check ip source eq \"$IP_SOURCE_ADDRESS\" protocol == \"tcp\" and icmp not equal to \"\" action block comment \"[Injection] - Query parameter is vulnerable to SQL injection attack.\" log detail snort.log level debug priority high timestamp now expire disable timeout 90000 filter outbound deny destination host \"*\" group policy none",
+    "faiss_time": 0.043,
+    "graph_time": 0.0,
+    "generation_time": 26.877,
+    "total_time": 26.92
+  },
+  {
+    "query": "Détecter un ransomware qui chiffre des fichiers via SMB",
+    "method": "graph_rag",
+    "seed_docs": [
+      {
+        "idx": 39,
+        "score": 0.8345421552658081
+      },
+      {
+        "idx": 20,
+        "score": 0.6209678053855896
+      }
+    ],
+    "graph_docs": [
+      {
+        "node": "doc_39",
+        "description": "Détection d'un ransomware chiffrant les fichiers réseau",
+        "attack_type": "Ransomware",
+        "snort_rule": "alert tcp $HOME_NET any -> $HOME_NET 445 (msg:\"Ransomware SMB Encryption\"; content:\"|FF 53 4D 42 25|\"; threshold:type both, track by_src, count 100, seconds 10; sid:1000040; rev:1;)"
+      },
+      {
+        "node": "doc_20",
+        "description": "Détection d'un ver réseau se propageant via SMB",
+        "attack_type": "Worm",
+        "snort_rule": "alert tcp any any -> $HOME_NET 445 (msg:\"SMB Worm Propagation\"; content:\"|FF 53 4D 42|\"; depth:4; sid:1000021; rev:1;)"
+      }
+    ],
+    "entity_context": "ATTACK: Ransomware | ATTACK: Worm | PROTOCOL: TCP | SEVERITY: critical",
+    "response": "alert tcp $SOURCE any -> $TARGET 445 (content:\"|FF 53 4D 42 25|\" msg=\"Ransomware SMB Chaining\");",
+    "faiss_time": 0.027,
+    "graph_time": 0.0,
+    "generation_time": 24.904,
+    "total_time": 24.931
+  },
+  {
+    "query": "Repérer une exfiltration de données via le protocole DNS",
+    "method": "graph_rag",
+    "seed_docs": [
+      {
+        "idx": 16,
+        "score": 0.8311254978179932
+      },
+      {
+        "idx": 13,
+        "score": 0.6530029773712158
+      }
+    ],
+    "graph_docs": [
+      {
+        "node": "doc_16",
+        "description": "Détection d'exfiltration de données via DNS",
+        "attack_type": "Data Exfiltration",
+        "snort_rule": "alert udp $HOME_NET any -> any 53 (msg:\"DNS Data Exfiltration\"; content:\"TXT\"; threshold:type both, track by_src, count 50, seconds 10; sid:1000017; rev:1;)"
+      },
+      {
+        "node": "doc_48",
+        "description": "Détection d'exfiltration via protocole ICMP tunneling",
+        "attack_type": "Data Exfiltration",
+        "snort_rule": "alert icmp $HOME_NET any -> any any (msg:\"ICMP Tunneling Exfiltration\"; itype:8; dsize:>100; threshold:type both, track by_src, count 20, seconds 5; sid:1000049; rev:1;)"
+      },
+      {
+        "node": "doc_19",
+        "description": "Attaque ICMP Smurf (broadcast amplification)",
+        "attack_type": "DDoS",
+        "snort_rule": "alert icmp any any -> 255.255.255.255 any (msg:\"ICMP Smurf Attack\"; itype:8; sid:1000020; rev:1;)"
+      },
+      {
+        "node": "doc_36",
+        "description": "Détection d'un DDoS par réflexion NTP",
+        "attack_type": "DDoS",
+        "snort_rule": "alert udp any 123 -> $HOME_NET any (msg:\"NTP Reflection DDoS\"; content:\"|1c|\"; depth:1; sid:1000037; rev:1;)"
+      },
+      {
+        "node": "doc_13",
+        "description": "Attaque par amplification DNS (DNS Amplification)",
+        "attack_type": "DDoS",
+        "snort_rule": "alert udp any any -> $HOME_NET 53 (msg:\"DNS Amplification Attack\"; content:\"|00 00 FF 00 01|\"; depth:5; offset:4; sid:1000014; rev:1;)"
+      }
+    ],
+    "entity_context": "SEVERITY: high | ATTACK: DDoS | ATTACK: Data Exfiltration | PROTOCOL: UDP",
+    "response": "alert tcp any => * any port 53 protocol dns snort.rule=exfil_data_alert_rule id=1000018 rev=1 timestamp=\"2023-04-01T00:00:00Z\" severity=critical description=\"Detection of data leakage through DNS traffic.\" source-port-range=any destination-port-range=any src-dst-type=dns dst-dst-type=network timeout=seconds=10 filter-by-src-count=count(50) filter-by-sid=sid(1000017);",
+    "faiss_time": 0.064,
+    "graph_time": 0.0,
+    "generation_time": 53.589,
+    "total_time": 53.653
+  }
+]

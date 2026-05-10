@@ -1,0 +1,172 @@
+[
+  {
+    "query": "Détecter un scan de ports SYN sur un serveur web",
+    "method": "rag_hybrid",
+    "retrieved_docs": [
+      {
+        "description": "Détection d'un scan de ports SYN sur un serveur web",
+        "attack_type": "Port Scan",
+        "dense_score": 0.9465,
+        "sparse_score": 16.7039,
+        "rrf_score": 0.032787,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SYN Scan détecté\"; flags:S; threshold:type both, track by_src, count 20, seconds 5; sid:1000001; rev:1;)"
+      },
+      {
+        "description": "Scan UDP sur plage de ports pour services exposés",
+        "attack_type": "Port Scan",
+        "dense_score": 0.6956,
+        "sparse_score": 6.8392,
+        "rrf_score": 0.031498,
+        "snort_rule": "alert udp any any -> $HOME_NET any (msg:\"UDP Port Scan\"; threshold:type both, track by_src, count 50, seconds 5; sid:1000029; rev:1;)"
+      },
+      {
+        "description": "Scan de ports FTP pour recherche de services ouverts",
+        "attack_type": "Port Scan",
+        "dense_score": 0.7317,
+        "sparse_score": 5.0778,
+        "rrf_score": 0.031281,
+        "snort_rule": "alert tcp any any -> $HOME_NET 21 (msg:\"FTP Port Scan\"; flags:S; threshold:type both, track by_src, count 5, seconds 10; sid:1000005; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any any -> $LOCALHOST port 80 protocol tcp action block msg \"Syn Scan detected\" severity high timestamp on;",
+    "retrieval_time": 0.03,
+    "generation_time": 26.194,
+    "total_time": 26.224
+  },
+  {
+    "query": "Bloquer une attaque par force brute sur le protocole SSH",
+    "method": "rag_hybrid",
+    "retrieved_docs": [
+      {
+        "description": "Tentative de connexion SSH par brute force",
+        "attack_type": "Brute Force",
+        "dense_score": 0.8239,
+        "sparse_score": 11.6626,
+        "rrf_score": 0.032787,
+        "snort_rule": "alert tcp any any -> $HOME_NET 22 (msg:\"SSH Brute Force\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000003; rev:1;)"
+      },
+      {
+        "description": "Tentative de force brute sur authentification LDAP",
+        "attack_type": "Brute Force",
+        "dense_score": 0.5722,
+        "sparse_score": 8.0191,
+        "rrf_score": 0.032258,
+        "snort_rule": "alert tcp any any -> $HOME_NET 389 (msg:\"LDAP Brute Force\"; threshold:type both, track by_src, count 10, seconds 30; sid:1000036; rev:1;)"
+      },
+      {
+        "description": "Trafic suspect vers le port Telnet depuis l'extérieur",
+        "attack_type": "Brute Force",
+        "dense_score": 0.5714,
+        "sparse_score": 6.4001,
+        "rrf_score": 0.031746,
+        "snort_rule": "alert tcp any any -> $HOME_NET 23 (msg:\"Telnet Access Suspect\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000019; rev:1;)"
+      }
+    ],
+    "response": "alert udp any any -- dport ssh -j EQ snort_rule_XXX ;",
+    "retrieval_time": 0.074,
+    "generation_time": 25.883,
+    "total_time": 25.957
+  },
+  {
+    "query": "Identifier une injection SQL dans une requête HTTP",
+    "method": "rag_hybrid",
+    "retrieved_docs": [
+      {
+        "description": "Injection SQL dans une requête HTTP GET",
+        "attack_type": "SQL Injection",
+        "dense_score": 0.8617,
+        "sparse_score": 19.0273,
+        "rrf_score": 0.032787,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SQL Injection GET\"; content:\"GET\"; http_method; content:\"union+select\"; nocase; http_uri; sid:1000004; rev:1;)"
+      },
+      {
+        "description": "Injection XSS dans un formulaire HTTP POST",
+        "attack_type": "XSS",
+        "dense_score": 0.5935,
+        "sparse_score": 6.3631,
+        "rrf_score": 0.032258,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"XSS Injection\"; content:\"POST\"; http_method; content:\"<script>\"; nocase; http_client_body; sid:1000028; rev:1;)"
+      },
+      {
+        "description": "Injection LDAP dans un formulaire d'authentification",
+        "attack_type": "LDAP Injection",
+        "dense_score": 0.5093,
+        "sparse_score": 5.755,
+        "rrf_score": 0.031025,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"LDAP Injection\"; content:\"POST\"; http_method; content:\"*)(uid=*\"; http_client_body; sid:1000044; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any any -> $TARGET_IP port 80 protocol all or proto icmp action block comment \"Injection of SQL query\" severity high duration infinite source eq \"$SOURCE_ADDRESS\" group add known-attackers snort.ruleset=snort.sql-injection.rule-id=69.snort.version=4",
+    "retrieval_time": 0.059,
+    "generation_time": 29.911,
+    "total_time": 29.97
+  },
+  {
+    "query": "Détecter un ransomware qui chiffre des fichiers via SMB",
+    "method": "rag_hybrid",
+    "retrieved_docs": [
+      {
+        "description": "Détection d'un ransomware chiffrant les fichiers réseau",
+        "attack_type": "Ransomware",
+        "dense_score": 0.8345,
+        "sparse_score": 8.682,
+        "rrf_score": 0.032787,
+        "snort_rule": "alert tcp $HOME_NET any -> $HOME_NET 445 (msg:\"Ransomware SMB Encryption\"; content:\"|FF 53 4D 42 25|\"; threshold:type both, track by_src, count 100, seconds 10; sid:1000040; rev:1;)"
+      },
+      {
+        "description": "Détection d'un ver réseau se propageant via SMB",
+        "attack_type": "Worm",
+        "dense_score": 0.621,
+        "sparse_score": 4.5277,
+        "rrf_score": 0.032258,
+        "snort_rule": "alert tcp any any -> $HOME_NET 445 (msg:\"SMB Worm Propagation\"; content:\"|FF 53 4D 42|\"; depth:4; sid:1000021; rev:1;)"
+      },
+      {
+        "description": "Téléchargement d'un exécutable via HTTP non chiffré",
+        "attack_type": "Malware",
+        "dense_score": 0.4493,
+        "sparse_score": 0,
+        "rrf_score": 0.015873,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Téléchargement EXE HTTP\"; content:\"MZ\"; within:2; depth:2; content:\".exe\"; nocase; http_uri; sid:1000010; rev:1;)"
+      }
+    ],
+    "response": "alert udp any any -> port 445 protocol smb msg=\"Chiffrement de fichier par ransomware\" severity high delay 60 timeout infinite capture unlimited source unknown destination localhost/localhost action block log \"Detection of an encrypted file-attacking ransomware using SMB.\"",
+    "retrieval_time": 0.064,
+    "generation_time": 33.265,
+    "total_time": 33.328
+  },
+  {
+    "query": "Repérer une exfiltration de données via le protocole DNS",
+    "method": "rag_hybrid",
+    "retrieved_docs": [
+      {
+        "description": "Détection d'exfiltration de données via DNS",
+        "attack_type": "Data Exfiltration",
+        "dense_score": 0.8311,
+        "sparse_score": 10.5156,
+        "rrf_score": 0.032787,
+        "snort_rule": "alert udp $HOME_NET any -> any 53 (msg:\"DNS Data Exfiltration\"; content:\"TXT\"; threshold:type both, track by_src, count 50, seconds 10; sid:1000017; rev:1;)"
+      },
+      {
+        "description": "Attaque par amplification DNS (DNS Amplification)",
+        "attack_type": "DDoS",
+        "dense_score": 0.653,
+        "sparse_score": 2.5205,
+        "rrf_score": 0.031514,
+        "snort_rule": "alert udp any any -> $HOME_NET 53 (msg:\"DNS Amplification Attack\"; content:\"|00 00 FF 00 01|\"; depth:5; offset:4; sid:1000014; rev:1;)"
+      },
+      {
+        "description": "Détection d'exfiltration via protocole ICMP tunneling",
+        "attack_type": "Data Exfiltration",
+        "dense_score": 0.5738,
+        "sparse_score": 7.7921,
+        "rrf_score": 0.031514,
+        "snort_rule": "alert icmp $HOME_NET any -> any any (msg:\"ICMP Tunneling Exfiltration\"; itype:8; dsize:>100; threshold:type both, track by_src, count 20, seconds 5; sid:1000049; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any => any port 53 (tcp_syn_conn_timeout > 60s and syn_count >= 5); protocol dns severity high comment \"Exfiltration of data through DNS\" syslog ;",
+    "retrieval_time": 0.066,
+    "generation_time": 31.826,
+    "total_time": 31.892
+  }
+]

@@ -1,0 +1,402 @@
+[
+  {
+    "id":1,
+    "description":"Détection d'un scan de ports SYN sur un serveur web",
+    "attack_type":"Port Scan",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"SYN Scan détecté\"; flags:S; threshold:type both, track by_src, count 20, seconds 5; sid:1000001; rev:1;)"
+  },
+  {
+    "id":2,
+    "description":"Détection d'une attaque DoS par flood UDP",
+    "attack_type":"DoS",
+    "protocol":"UDP",
+    "severity":"high",
+    "snort_rule":"alert udp any any -> $HOME_NET any (msg:\"UDP Flood DoS\"; threshold:type both, track by_src, count 1000, seconds 1; sid:1000002; rev:1;)"
+  },
+  {
+    "id":3,
+    "description":"Tentative de connexion SSH par brute force",
+    "attack_type":"Brute Force",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 22 (msg:\"SSH Brute Force\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000003; rev:1;)"
+  },
+  {
+    "id":4,
+    "description":"Injection SQL dans une requête HTTP GET",
+    "attack_type":"SQL Injection",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"SQL Injection GET\"; content:\"GET\"; http_method; content:\"union+select\"; nocase; http_uri; sid:1000004; rev:1;)"
+  },
+  {
+    "id":5,
+    "description":"Scan de ports FTP pour recherche de services ouverts",
+    "attack_type":"Port Scan",
+    "protocol":"TCP",
+    "severity":"low",
+    "snort_rule":"alert tcp any any -> $HOME_NET 21 (msg:\"FTP Port Scan\"; flags:S; threshold:type both, track by_src, count 5, seconds 10; sid:1000005; rev:1;)"
+  },
+  {
+    "id":6,
+    "description":"Attaque SYN Flood contre un serveur DNS",
+    "attack_type":"DoS",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 53 (msg:\"SYN Flood DNS\"; flags:S; threshold:type both, track by_src, count 500, seconds 1; sid:1000006; rev:1;)"
+  },
+  {
+    "id":7,
+    "description":"Tentative d'exploitation de buffer overflow via FTP",
+    "attack_type":"Buffer Overflow",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 21 (msg:\"FTP Buffer Overflow\"; content:\"USER\"; content:\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"; sid:1000007; rev:1;)"
+  },
+  {
+    "id":8,
+    "description":"Détection d'un reverse shell via connexion sortante suspecte",
+    "attack_type":"Reverse Shell",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp $HOME_NET any -> any 4444 (msg:\"Reverse Shell détecté port 4444\"; flags:S; sid:1000008; rev:1;)"
+  },
+  {
+    "id":9,
+    "description":"Scan ICMP ping sweep sur le réseau interne",
+    "attack_type":"Reconnaissance",
+    "protocol":"ICMP",
+    "severity":"low",
+    "snort_rule":"alert icmp any any -> $HOME_NET any (msg:\"ICMP Ping Sweep\"; itype:8; threshold:type both, track by_src, count 30, seconds 5; sid:1000009; rev:1;)"
+  },
+  {
+    "id":10,
+    "description":"Téléchargement d'un exécutable via HTTP non chiffré",
+    "attack_type":"Malware",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"Téléchargement EXE HTTP\"; content:\"MZ\"; within:2; depth:2; content:\".exe\"; nocase; http_uri; sid:1000010; rev:1;)"
+  },
+  {
+    "id":11,
+    "description":"Tentative de connexion RDP depuis une IP externe suspecte",
+    "attack_type":"Brute Force",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 3389 (msg:\"RDP Brute Force\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000011; rev:1;)"
+  },
+  {
+    "id":12,
+    "description":"Détection de trafic Command and Control (C2) via HTTP",
+    "attack_type":"C2",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp $HOME_NET any -> any 80 (msg:\"C2 Beacon HTTP\"; content:\"POST\"; http_method; content:\"\/update\"; http_uri; threshold:type both, track by_src, count 5, seconds 60; sid:1000012; rev:1;)"
+  },
+  {
+    "id":13,
+    "description":"Injection de commande OS via paramètre HTTP",
+    "attack_type":"Command Injection",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"OS Command Injection\"; content:\"GET\"; http_method; content:\"|3b|\"; http_uri; content:\"cmd\"; nocase; http_uri; sid:1000013; rev:1;)"
+  },
+  {
+    "id":14,
+    "description":"Attaque par amplification DNS (DNS Amplification)",
+    "attack_type":"DDoS",
+    "protocol":"UDP",
+    "severity":"high",
+    "snort_rule":"alert udp any any -> $HOME_NET 53 (msg:\"DNS Amplification Attack\"; content:\"|00 00 FF 00 01|\"; depth:5; offset:4; sid:1000014; rev:1;)"
+  },
+  {
+    "id":15,
+    "description":"Tentative d'accès à la page d'administration WordPress",
+    "attack_type":"Web Attack",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"WordPress Admin Access\"; content:\"GET\"; http_method; content:\"\/wp-admin\"; http_uri; sid:1000015; rev:1;)"
+  },
+  {
+    "id":16,
+    "description":"Scan de vulnérabilités avec Nmap détecté",
+    "attack_type":"Reconnaissance",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET any (msg:\"Nmap Scan Détecté\"; content:\"|00 0A 00 00 00 00 00|\"; depth:7; sid:1000016; rev:1;)"
+  },
+  {
+    "id":17,
+    "description":"Détection d'exfiltration de données via DNS",
+    "attack_type":"Data Exfiltration",
+    "protocol":"UDP",
+    "severity":"high",
+    "snort_rule":"alert udp $HOME_NET any -> any 53 (msg:\"DNS Data Exfiltration\"; content:\"TXT\"; threshold:type both, track by_src, count 50, seconds 10; sid:1000017; rev:1;)"
+  },
+  {
+    "id":18,
+    "description":"Tentative de traversal de répertoire via HTTP",
+    "attack_type":"Directory Traversal",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"Directory Traversal\"; content:\"GET\"; http_method; content:\"..\/..\/..\/\"; http_uri; sid:1000018; rev:1;)"
+  },
+  {
+    "id":19,
+    "description":"Trafic suspect vers le port Telnet depuis l'extérieur",
+    "attack_type":"Brute Force",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 23 (msg:\"Telnet Access Suspect\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000019; rev:1;)"
+  },
+  {
+    "id":20,
+    "description":"Attaque ICMP Smurf (broadcast amplification)",
+    "attack_type":"DDoS",
+    "protocol":"ICMP",
+    "severity":"high",
+    "snort_rule":"alert icmp any any -> 255.255.255.255 any (msg:\"ICMP Smurf Attack\"; itype:8; sid:1000020; rev:1;)"
+  },
+  {
+    "id":21,
+    "description":"Détection d'un ver réseau se propageant via SMB",
+    "attack_type":"Worm",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 445 (msg:\"SMB Worm Propagation\"; content:\"|FF 53 4D 42|\"; depth:4; sid:1000021; rev:1;)"
+  },
+  {
+    "id":22,
+    "description":"Tentative d'exploitation EternalBlue (MS17-010)",
+    "attack_type":"Exploit",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 445 (msg:\"EternalBlue Exploit MS17-010\"; content:\"|00 00 00 00 00 01 00 00 00 00 00 00 00|\"; depth:13; sid:1000022; rev:1;)"
+  },
+  {
+    "id":23,
+    "description":"Requête HTTP avec User-Agent de scanner automatique",
+    "attack_type":"Reconnaissance",
+    "protocol":"TCP",
+    "severity":"low",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"Scanner User-Agent\"; content:\"nikto\"; nocase; http_header; sid:1000023; rev:1;)"
+  },
+  {
+    "id":24,
+    "description":"Détection de connexion VPN non autorisée via PPTP",
+    "attack_type":"Unauthorized Access",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 1723 (msg:\"Connexion PPTP Non Autorisée\"; flags:S; sid:1000024; rev:1;)"
+  },
+  {
+    "id":25,
+    "description":"Accès suspect à un fichier de configuration sensible",
+    "attack_type":"Web Attack",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"Accès fichier config\"; content:\"GET\"; http_method; content:\".env\"; http_uri; nocase; sid:1000025; rev:1;)"
+  },
+  {
+    "id":26,
+    "description":"Tentative de connexion SMTP avec authentification répétée",
+    "attack_type":"Brute Force",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 25 (msg:\"SMTP Auth Brute Force\"; content:\"AUTH LOGIN\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000026; rev:1;)"
+  },
+  {
+    "id":27,
+    "description":"Trafic IRC suspect depuis le réseau interne (botnet)",
+    "attack_type":"Botnet",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp $HOME_NET any -> any 6667 (msg:\"Trafic IRC Botnet\"; content:\"NICK\"; content:\"JOIN\"; sid:1000027; rev:1;)"
+  },
+  {
+    "id":28,
+    "description":"Injection XSS dans un formulaire HTTP POST",
+    "attack_type":"XSS",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"XSS Injection\"; content:\"POST\"; http_method; content:\"<script>\"; nocase; http_client_body; sid:1000028; rev:1;)"
+  },
+  {
+    "id":29,
+    "description":"Scan UDP sur plage de ports pour services exposés",
+    "attack_type":"Port Scan",
+    "protocol":"UDP",
+    "severity":"low",
+    "snort_rule":"alert udp any any -> $HOME_NET any (msg:\"UDP Port Scan\"; threshold:type both, track by_src, count 50, seconds 5; sid:1000029; rev:1;)"
+  },
+  {
+    "id":30,
+    "description":"Détection de trafic Tor sortant depuis réseau interne",
+    "attack_type":"Anonymization",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp $HOME_NET any -> any 9001 (msg:\"Trafic Tor Détecté\"; flags:S; sid:1000030; rev:1;)"
+  },
+  {
+    "id":31,
+    "description":"Tentative d'exploitation Apache Struts (CVE-2017-5638)",
+    "attack_type":"Exploit",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"Apache Struts RCE\"; content:\"Content-Type\"; content:\"%{(\"; http_header; nocase; sid:1000031; rev:1;)"
+  },
+  {
+    "id":32,
+    "description":"Flood HTTP (slowloris) contre serveur web",
+    "attack_type":"DoS",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"Slowloris DoS\"; flags:S; content:\"GET\"; threshold:type both, track by_src, count 200, seconds 10; sid:1000032; rev:1;)"
+  },
+  {
+    "id":33,
+    "description":"Accès à phpMyAdmin depuis une IP externe",
+    "attack_type":"Unauthorized Access",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"phpMyAdmin Access\"; content:\"GET\"; http_method; content:\"\/phpmyadmin\"; nocase; http_uri; sid:1000033; rev:1;)"
+  },
+  {
+    "id":34,
+    "description":"Requête DNS vers domaine malveillant connu",
+    "attack_type":"Malware",
+    "protocol":"UDP",
+    "severity":"high",
+    "snort_rule":"alert udp $HOME_NET any -> any 53 (msg:\"DNS Malveillant\"; content:\"malware-c2.ru\"; nocase; sid:1000034; rev:1;)"
+  },
+  {
+    "id":35,
+    "description":"Connexion sortante vers adresse IP suspecte Tor Exit Node",
+    "attack_type":"C2",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp $HOME_NET any -> 185.220.101.0\/24 any (msg:\"Connexion Tor Exit Node\"; flags:S; sid:1000035; rev:1;)"
+  },
+  {
+    "id":36,
+    "description":"Tentative de force brute sur authentification LDAP",
+    "attack_type":"Brute Force",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 389 (msg:\"LDAP Brute Force\"; threshold:type both, track by_src, count 10, seconds 30; sid:1000036; rev:1;)"
+  },
+  {
+    "id":37,
+    "description":"Détection d'un DDoS par réflexion NTP",
+    "attack_type":"DDoS",
+    "protocol":"UDP",
+    "severity":"high",
+    "snort_rule":"alert udp any 123 -> $HOME_NET any (msg:\"NTP Reflection DDoS\"; content:\"|1c|\"; depth:1; sid:1000037; rev:1;)"
+  },
+  {
+    "id":38,
+    "description":"Accès non autorisé à un API REST sans token",
+    "attack_type":"Unauthorized Access",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 8080 (msg:\"API Access Sans Auth\"; content:\"GET\"; http_method; content:\"\/api\/v1\"; http_uri; content:!\"Authorization\"; http_header; sid:1000038; rev:1;)"
+  },
+  {
+    "id":39,
+    "description":"Exécution de commande PowerShell via HTTP",
+    "attack_type":"Command Injection",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"PowerShell via HTTP\"; content:\"powershell\"; nocase; http_client_body; sid:1000039; rev:1;)"
+  },
+  {
+    "id":40,
+    "description":"Détection d'un ransomware chiffrant les fichiers réseau",
+    "attack_type":"Ransomware",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp $HOME_NET any -> $HOME_NET 445 (msg:\"Ransomware SMB Encryption\"; content:\"|FF 53 4D 42 25|\"; threshold:type both, track by_src, count 100, seconds 10; sid:1000040; rev:1;)"
+  },
+  {
+    "id":41,
+    "description":"Scan ARP pour cartographie du réseau local",
+    "attack_type":"Reconnaissance",
+    "protocol":"ARP",
+    "severity":"low",
+    "snort_rule":"alert arp any any -> any any (msg:\"ARP Scan Réseau Local\"; threshold:type both, track by_src, count 50, seconds 5; sid:1000041; rev:1;)"
+  },
+  {
+    "id":42,
+    "description":"Tentative de connexion MySQL depuis une IP externe",
+    "attack_type":"Unauthorized Access",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET 3306 (msg:\"MySQL Accès Externe\"; flags:S; sid:1000042; rev:1;)"
+  },
+  {
+    "id":43,
+    "description":"Trafic de minage de cryptomonnaie (CoinMiner)",
+    "attack_type":"Cryptomining",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp $HOME_NET any -> any 3333 (msg:\"CoinMiner Stratum Protocol\"; content:\"mining.subscribe\"; sid:1000043; rev:1;)"
+  },
+  {
+    "id":44,
+    "description":"Injection LDAP dans un formulaire d'authentification",
+    "attack_type":"LDAP Injection",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 80 (msg:\"LDAP Injection\"; content:\"POST\"; http_method; content:\"*)(uid=*\"; http_client_body; sid:1000044; rev:1;)"
+  },
+  {
+    "id":45,
+    "description":"Attaque de type Man-in-the-Middle via ARP Spoofing",
+    "attack_type":"MITM",
+    "protocol":"ARP",
+    "severity":"critical",
+    "snort_rule":"alert arp any any -> any any (msg:\"ARP Spoofing MITM\"; content:\"|00 01 08 00 06 04 00 02|\"; depth:8; sid:1000045; rev:1;)"
+  },
+  {
+    "id":46,
+    "description":"Détection d'un scan XMAS (flags FIN+PSH+URG)",
+    "attack_type":"Port Scan",
+    "protocol":"TCP",
+    "severity":"medium",
+    "snort_rule":"alert tcp any any -> $HOME_NET any (msg:\"XMAS Scan\"; flags:FPU; sid:1000046; rev:1;)"
+  },
+  {
+    "id":47,
+    "description":"Tentative d'accès Kubernetes Dashboard sans authentification",
+    "attack_type":"Unauthorized Access",
+    "protocol":"TCP",
+    "severity":"high",
+    "snort_rule":"alert tcp any any -> $HOME_NET 8001 (msg:\"Kubernetes Dashboard Non Auth\"; content:\"GET\"; http_method; content:\"\/api\/v1\/namespaces\"; http_uri; sid:1000047; rev:1;)"
+  },
+  {
+    "id":48,
+    "description":"Connexion entrante sur port inhabituel depuis l'extérieur",
+    "attack_type":"Suspicious Traffic",
+    "protocol":"TCP",
+    "severity":"low",
+    "snort_rule":"alert tcp any any -> $HOME_NET 31337 (msg:\"Port Inhabituel Back Orifice\"; flags:S; sid:1000048; rev:1;)"
+  },
+  {
+    "id":49,
+    "description":"Détection d'exfiltration via protocole ICMP tunneling",
+    "attack_type":"Data Exfiltration",
+    "protocol":"ICMP",
+    "severity":"high",
+    "snort_rule":"alert icmp $HOME_NET any -> any any (msg:\"ICMP Tunneling Exfiltration\"; itype:8; dsize:>100; threshold:type both, track by_src, count 20, seconds 5; sid:1000049; rev:1;)"
+  },
+  {
+    "id":50,
+    "description":"Tentative d'exploitation Log4Shell (CVE-2021-44228)",
+    "attack_type":"Exploit",
+    "protocol":"TCP",
+    "severity":"critical",
+    "snort_rule":"alert tcp any any -> $HOME_NET any (msg:\"Log4Shell CVE-2021-44228\"; content:\"${jndi:\"; nocase; http_any; sid:1000050; rev:1;)"
+  }
+]

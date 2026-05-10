@@ -1,0 +1,257 @@
+[
+  {
+    "query": "Détecter un scan de ports SYN sur un serveur web",
+    "method": "multi_hop_rag",
+    "reformulated_query": "\"Recherchez le port 80 et les flags FIN+PSH+URG dans une attaque TCP à l'adresse IP du serveur web.\"",
+    "hop1_docs": [
+      {
+        "description": "Détection d'un scan de ports SYN sur un serveur web",
+        "attack_type": "Port Scan",
+        "score": 0.9465,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SYN Scan détecté\"; flags:S; threshold:type both, track by_src, count 20, seconds 5; sid:1000001; rev:1;)"
+      },
+      {
+        "description": "Scan de ports FTP pour recherche de services ouverts",
+        "attack_type": "Port Scan",
+        "score": 0.7317,
+        "snort_rule": "alert tcp any any -> $HOME_NET 21 (msg:\"FTP Port Scan\"; flags:S; threshold:type both, track by_src, count 5, seconds 10; sid:1000005; rev:1;)"
+      },
+      {
+        "description": "Détection d'un scan XMAS (flags FIN+PSH+URG)",
+        "attack_type": "Port Scan",
+        "score": 0.7099,
+        "snort_rule": "alert tcp any any -> $HOME_NET any (msg:\"XMAS Scan\"; flags:FPU; sid:1000046; rev:1;)"
+      }
+    ],
+    "hop2_docs": [
+      {
+        "description": "Accès suspect à un fichier de configuration sensible",
+        "attack_type": "Web Attack",
+        "score": 0.5683,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Accès fichier config\"; content:\"GET\"; http_method; content:\".env\"; http_uri; nocase; sid:1000025; rev:1;)"
+      },
+      {
+        "description": "Tentative d'accès à la page d'administration WordPress",
+        "attack_type": "Web Attack",
+        "score": 0.536,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"WordPress Admin Access\"; content:\"GET\"; http_method; content:\"/wp-admin\"; http_uri; sid:1000015; rev:1;)"
+      },
+      {
+        "description": "Requête HTTP avec User-Agent de scanner automatique",
+        "attack_type": "Reconnaissance",
+        "score": 0.5153,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Scanner User-Agent\"; content:\"nikto\"; nocase; http_header; sid:1000023; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any any -> $TARGET_IP 80 (msg:\"Scan de Ports SYN sur Serveur WEB\" OR msg:\"Port 80 Attacks Flags FIN+PSH+URG\"; severity high; sid:1000079; rev:1;)",
+    "hop1_time": 0.156,
+    "reform_time": 14.765,
+    "hop2_time": 0.123,
+    "generation_time": 46.253,
+    "total_time": 61.297
+  },
+  {
+    "query": "Bloquer une attaque par force brute sur le protocole SSH",
+    "method": "multi_hop_rag",
+    "reformulated_query": "\"Bruteforce attacks on TCP protocols including but not limited to attempts at connecting via SSH using brute-force methods.\"",
+    "hop1_docs": [
+      {
+        "description": "Tentative de connexion SSH par brute force",
+        "attack_type": "Brute Force",
+        "score": 0.8239,
+        "snort_rule": "alert tcp any any -> $HOME_NET 22 (msg:\"SSH Brute Force\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000003; rev:1;)"
+      },
+      {
+        "description": "Tentative de force brute sur authentification LDAP",
+        "attack_type": "Brute Force",
+        "score": 0.5722,
+        "snort_rule": "alert tcp any any -> $HOME_NET 389 (msg:\"LDAP Brute Force\"; threshold:type both, track by_src, count 10, seconds 30; sid:1000036; rev:1;)"
+      },
+      {
+        "description": "Trafic suspect vers le port Telnet depuis l'extérieur",
+        "attack_type": "Brute Force",
+        "score": 0.5714,
+        "snort_rule": "alert tcp any any -> $HOME_NET 23 (msg:\"Telnet Access Suspect\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000019; rev:1;)"
+      }
+    ],
+    "hop2_docs": [
+      {
+        "description": "Tentative de connexion RDP depuis une IP externe suspecte",
+        "attack_type": "Brute Force",
+        "score": 0.5292,
+        "snort_rule": "alert tcp any any -> $HOME_NET 3389 (msg:\"RDP Brute Force\"; flags:S; threshold:type both, track by_src, count 5, seconds 30; sid:1000011; rev:1;)"
+      },
+      {
+        "description": "Tentative de connexion SMTP avec authentification répétée",
+        "attack_type": "Brute Force",
+        "score": 0.5256,
+        "snort_rule": "alert tcp any any -> $HOME_NET 25 (msg:\"SMTP Auth Brute Force\"; content:\"AUTH LOGIN\"; threshold:type both, track by_src, count 10, seconds 60; sid:1000026; rev:1;)"
+      },
+      {
+        "description": "Accès suspect à un fichier de configuration sensible",
+        "attack_type": "Web Attack",
+        "score": 0.4661,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Accès fichier config\"; content:\"GET\"; http_method; content:\".env\"; http_uri; nocase; sid:1000025; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any any -> $LOCAL_NET ssh_bruth_force (threshold,type both,count 4);",
+    "hop1_time": 0.09,
+    "reform_time": 12.112,
+    "hop2_time": 0.133,
+    "generation_time": 48.472,
+    "total_time": 60.808
+  },
+  {
+    "query": "Identifier une injection SQL dans une requête HTTP",
+    "method": "multi_hop_rag",
+    "reformulated_query": "\"Recherche d'injection SQL sur les formulaires HTTP POST pour accéder aux fichiers sensibles TCP\"",
+    "hop1_docs": [
+      {
+        "description": "Injection SQL dans une requête HTTP GET",
+        "attack_type": "SQL Injection",
+        "score": 0.8617,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"SQL Injection GET\"; content:\"GET\"; http_method; content:\"union+select\"; nocase; http_uri; sid:1000004; rev:1;)"
+      },
+      {
+        "description": "Injection XSS dans un formulaire HTTP POST",
+        "attack_type": "XSS",
+        "score": 0.5935,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"XSS Injection\"; content:\"POST\"; http_method; content:\"<script>\"; nocase; http_client_body; sid:1000028; rev:1;)"
+      },
+      {
+        "description": "Accès suspect à un fichier de configuration sensible",
+        "attack_type": "Web Attack",
+        "score": 0.5419,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Accès fichier config\"; content:\"GET\"; http_method; content:\".env\"; http_uri; nocase; sid:1000025; rev:1;)"
+      }
+    ],
+    "hop2_docs": [
+      {
+        "description": "Injection LDAP dans un formulaire d'authentification",
+        "attack_type": "LDAP Injection",
+        "score": 0.5935,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"LDAP Injection\"; content:\"POST\"; http_method; content:\"*)(uid=*\"; http_client_body; sid:1000044; rev:1;)"
+      },
+      {
+        "description": "Injection de commande OS via paramètre HTTP",
+        "attack_type": "Command Injection",
+        "score": 0.5645,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"OS Command Injection\"; content:\"GET\"; http_method; content:\"|3b|\"; http_uri; content:\"cmd\"; nocase; http_uri; sid:1000013; rev:1;)"
+      },
+      {
+        "description": "Requête HTTP avec User-Agent de scanner automatique",
+        "attack_type": "Reconnaissance",
+        "score": 0.5346,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Scanner User-Agent\"; content:\"nikto\"; nocase; http_header; sid:1000023; rev:1;)"
+      }
+    ],
+    "response": "alert tcp any any -> $TARGET_IPS (msg:\"Injections SQL on form data for sensitive files access over HTTPS\" priority:7 severity:normal);",
+    "hop1_time": 0.057,
+    "reform_time": 12.739,
+    "hop2_time": 0.13,
+    "generation_time": 45.155,
+    "total_time": 58.082
+  },
+  {
+    "query": "Détecter un ransomware qui chiffre des fichiers via SMB",
+    "method": "multi_hop_rag",
+    "reformulated_query": "\"Reconnaissance de l'infestation par le logiciel malveillant cryptographe en utilisant la méthode SMB sur une base TCP pour déterminer son origine et sa nature.\"",
+    "hop1_docs": [
+      {
+        "description": "Détection d'un ransomware chiffrant les fichiers réseau",
+        "attack_type": "Ransomware",
+        "score": 0.8345,
+        "snort_rule": "alert tcp $HOME_NET any -> $HOME_NET 445 (msg:\"Ransomware SMB Encryption\"; content:\"|FF 53 4D 42 25|\"; threshold:type both, track by_src, count 100, seconds 10; sid:1000040; rev:1;)"
+      },
+      {
+        "description": "Détection d'un ver réseau se propageant via SMB",
+        "attack_type": "Worm",
+        "score": 0.621,
+        "snort_rule": "alert tcp any any -> $HOME_NET 445 (msg:\"SMB Worm Propagation\"; content:\"|FF 53 4D 42|\"; depth:4; sid:1000021; rev:1;)"
+      },
+      {
+        "description": "Téléchargement d'un exécutable via HTTP non chiffré",
+        "attack_type": "Malware",
+        "score": 0.4493,
+        "snort_rule": "alert tcp any any -> $HOME_NET 80 (msg:\"Téléchargement EXE HTTP\"; content:\"MZ\"; within:2; depth:2; content:\".exe\"; nocase; http_uri; sid:1000010; rev:1;)"
+      }
+    ],
+    "hop2_docs": [
+      {
+        "description": "Scan de vulnérabilités avec Nmap détecté",
+        "attack_type": "Reconnaissance",
+        "score": 0.588,
+        "snort_rule": "alert tcp any any -> $HOME_NET any (msg:\"Nmap Scan Détecté\"; content:\"|00 0A 00 00 00 00 00|\"; depth:7; sid:1000016; rev:1;)"
+      },
+      {
+        "description": "Détection d'un reverse shell via connexion sortante suspecte",
+        "attack_type": "Reverse Shell",
+        "score": 0.5673,
+        "snort_rule": "alert tcp $HOME_NET any -> any 4444 (msg:\"Reverse Shell détecté port 4444\"; flags:S; sid:1000008; rev:1;)"
+      },
+      {
+        "description": "Connexion entrante sur port inhabituel depuis l'extérieur",
+        "attack_type": "Suspicious Traffic",
+        "score": 0.5615,
+        "snort_rule": "alert tcp any any -> $HOME_NET 31337 (msg:\"Port Inhabituel Back Orifice\"; flags:S; sid:1000048; rev:1;)"
+      }
+    ],
+    "response": "alert tcp $HOME_NET any -> $HOME_NET 445 (msg:\"Cryptographic File Chaining Attack on SMB\"; severity:normal; sid:1000099; rev:1;)",
+    "hop1_time": 0.027,
+    "reform_time": 16.549,
+    "hop2_time": 0.034,
+    "generation_time": 50.689,
+    "total_time": 67.299
+  },
+  {
+    "query": "Repérer une exfiltration de données via le protocole DNS",
+    "method": "multi_hop_rag",
+    "reformulated_query": "\"Recherche sur l'attaque UDP à la recherche du déplacement non autorisé des informations dans un réseau en utilisant les protocoles DNS.\"",
+    "hop1_docs": [
+      {
+        "description": "Détection d'exfiltration de données via DNS",
+        "attack_type": "Data Exfiltration",
+        "score": 0.8311,
+        "snort_rule": "alert udp $HOME_NET any -> any 53 (msg:\"DNS Data Exfiltration\"; content:\"TXT\"; threshold:type both, track by_src, count 50, seconds 10; sid:1000017; rev:1;)"
+      },
+      {
+        "description": "Attaque par amplification DNS (DNS Amplification)",
+        "attack_type": "DDoS",
+        "score": 0.653,
+        "snort_rule": "alert udp any any -> $HOME_NET 53 (msg:\"DNS Amplification Attack\"; content:\"|00 00 FF 00 01|\"; depth:5; offset:4; sid:1000014; rev:1;)"
+      },
+      {
+        "description": "Requête DNS vers domaine malveillant connu",
+        "attack_type": "Malware",
+        "score": 0.6499,
+        "snort_rule": "alert udp $HOME_NET any -> any 53 (msg:\"DNS Malveillant\"; content:\"malware-c2.ru\"; nocase; sid:1000034; rev:1;)"
+      }
+    ],
+    "hop2_docs": [
+      {
+        "description": "Attaque SYN Flood contre un serveur DNS",
+        "attack_type": "DoS",
+        "score": 0.5125,
+        "snort_rule": "alert tcp any any -> $HOME_NET 53 (msg:\"SYN Flood DNS\"; flags:S; threshold:type both, track by_src, count 500, seconds 1; sid:1000006; rev:1;)"
+      },
+      {
+        "description": "Scan UDP sur plage de ports pour services exposés",
+        "attack_type": "Port Scan",
+        "score": 0.4979,
+        "snort_rule": "alert udp any any -> $HOME_NET any (msg:\"UDP Port Scan\"; threshold:type both, track by_src, count 50, seconds 5; sid:1000029; rev:1;)"
+      },
+      {
+        "description": "Détection d'une attaque DoS par flood UDP",
+        "attack_type": "DoS",
+        "score": 0.4658,
+        "snort_rule": "alert udp any any -> $HOME_NET any (msg:\"UDP Flood DoS\"; threshold:type both, track by_src, count 1000, seconds 1; sid:1000002; rev:1;)"
+      }
+    ],
+    "response": "alert udp $HOME_NET any -> any 53 (msg:\"Exfiltration Non Autorisée Des Données Via Le Protocole DNS\"; severity high; sid:1000081; rev:1;)",
+    "hop1_time": 0.129,
+    "reform_time": 13.868,
+    "hop2_time": 0.135,
+    "generation_time": 52.588,
+    "total_time": 66.721
+  }
+]

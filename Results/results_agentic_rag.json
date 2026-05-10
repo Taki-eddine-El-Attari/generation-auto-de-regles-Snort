@@ -1,0 +1,334 @@
+[
+  {
+    "query": "Détecter un scan de ports SYN sur un serveur web",
+    "method": "agentic_rag",
+    "decision": {
+      "needs_retrieval": true,
+      "keyword_matches": 2,
+      "is_complex": true,
+      "llm_decision": "yes"
+    },
+    "iterations": [
+      {
+        "iteration": 1,
+        "retrieval_time": 0.681,
+        "docs_retrieved": 3,
+        "generation_time": 22.569,
+        "response": "alert tcp any any -> $LOCALHOST 80 (msg=\"Syn Scan detected\" syn:true)",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 2,
+        "retrieval_time": 0.042,
+        "docs_retrieved": 4,
+        "generation_time": 27.347,
+        "response": "alert tcp any any -> $LOCALHOST 80 (msg=\"Syn Scan detected\" syn:true)",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 3,
+        "retrieval_time": 0.044,
+        "docs_retrieved": 5,
+        "generation_time": 32.845,
+        "response": "alert tcp any any -> $TARGET_IPS 80 (msg=\"Syn Scan detected\" priority=high)",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      }
+    ],
+    "total_iterations": 3,
+    "response": "alert tcp any any -> $TARGET_IPS 80 (msg=\"Syn Scan detected\" priority=high)",
+    "final_score": 2,
+    "total_time": 89.766
+  },
+  {
+    "query": "Bloquer une attaque par force brute sur le protocole SSH",
+    "method": "agentic_rag",
+    "decision": {
+      "needs_retrieval": true,
+      "keyword_matches": 2,
+      "is_complex": true,
+      "llm_decision": "yes"
+    },
+    "iterations": [
+      {
+        "iteration": 1,
+        "retrieval_time": 0.051,
+        "docs_retrieved": 3,
+        "generation_time": 30.662,
+        "response": "alert udp any any --dport ssh -j reorp --output-reports /var/log/snort/report.txt ;",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 2,
+        "retrieval_time": 0.046,
+        "docs_retrieved": 4,
+        "generation_time": 30.748,
+        "response": "alert udp any any --dport ssh -j reorp --count-type counter --threshold 7 --sid \"ssh_bruteforce\"",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 3,
+        "retrieval_time": 0.046,
+        "docs_retrieved": 5,
+        "generation_time": 41.609,
+        "response": "alert udp any any --dport ssh -j reorp --count-type counter --threshold 7 --sid \"ssh_bruteforce\" --rev 1 --output-filter deny=ip-src:$IP_SRC ip-dst:$IP_DST http-code:200-299 --log-prefix=\"Brute-force attack on SSH detected!\"",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      }
+    ],
+    "total_iterations": 3,
+    "response": "alert udp any any --dport ssh -j reorp --count-type counter --threshold 7 --sid \"ssh_bruteforce\" --rev 1 --output-filter deny=ip-src:$IP_SRC ip-dst:$IP_DST http-code:200-299 --log-prefix=\"Brute-force attack on SSH detected!\"",
+    "final_score": 2,
+    "total_time": 108.082
+  },
+  {
+    "query": "Identifier une injection SQL dans une requête HTTP",
+    "method": "agentic_rag",
+    "decision": {
+      "needs_retrieval": true,
+      "keyword_matches": 1,
+      "is_complex": true,
+      "llm_decision": "yes"
+    },
+    "iterations": [
+      {
+        "iteration": 1,
+        "retrieval_time": 0.041,
+        "docs_retrieved": 3,
+        "generation_time": 23.694,
+        "response": "alert tcp any any -> $TARGET_IPS port ANY proto UDP check ip.src == $SOURCE_IPS action block comment \"Injection of SQL in an HTTP request\"",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 2,
+        "retrieval_time": 0.042,
+        "docs_retrieved": 4,
+        "generation_time": 28.287,
+        "response": "alert tcp any any -> $LOCAL_NETWORK 80 (msg=\"Injection SQL\"; content;\"HTTP\");",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 3,
+        "retrieval_time": 0.046,
+        "docs_retrieved": 5,
+        "generation_time": 37.55,
+        "response": "alert tcp any any -> $TARGET_IPS port ANY state ESTABLISHED proto UDP check ip.src == $IP_SRC sniffing.port > 67 udp.dport < 9000 priority high comment \"Injection of SQL in an HTTP request\"",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      }
+    ],
+    "total_iterations": 3,
+    "response": "alert tcp any any -> $TARGET_IPS port ANY state ESTABLISHED proto UDP check ip.src == $IP_SRC sniffing.port > 67 udp.dport < 9000 priority high comment \"Injection of SQL in an HTTP request\"",
+    "final_score": 2,
+    "total_time": 94.358
+  },
+  {
+    "query": "Détecter un ransomware qui chiffre des fichiers via SMB",
+    "method": "agentic_rag",
+    "decision": {
+      "needs_retrieval": true,
+      "keyword_matches": 1,
+      "is_complex": true,
+      "llm_decision": "yes"
+    },
+    "iterations": [
+      {
+        "iteration": 1,
+        "retrieval_time": 0.045,
+        "docs_retrieved": 3,
+        "generation_time": 47.404,
+        "response": "alert tcp $LOCALNET -i smbany -> $LOCALHOST ANY (protocol \"smb\"); message severity high; action allow; port range 69-70 ; timeout infinite; snort version >= 4.7; timestamp format ms; datestamp on; logsource windows event source = Microsoft-Windows-Samba; category malware-smb encryption attack; reference https://www.sans.org/content/samples/ransomware-rdp-exe/http-executor-malware-sample/; description=Detected an attempt to encrypt files using S/MIME in SMBv2 mode over local network; keywords s/mime encrypted file ransomware; state persistent; sid 1000040; rev 1; --- END OF RULE ---",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 2,
+        "retrieval_time": 0.045,
+        "docs_retrieved": 4,
+        "generation_time": 36.761,
+        "response": "alert tcp $LOCAL_NET any -> $LOCAL_NET 445 (msg=\"Ransomware SMB Chaining\"; content:\"|FF 6A 79 6F 6C 6B|\" ; severity high; sid:100001)",
+        "evaluation": {
+          "is_sufficient": true,
+          "quality_score": 4,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": true,
+            "has_protocol": true,
+            "has_content": true
+          }
+        }
+      }
+    ],
+    "total_iterations": 2,
+    "response": "alert tcp $LOCAL_NET any -> $LOCAL_NET 445 (msg=\"Ransomware SMB Chaining\"; content:\"|FF 6A 79 6F 6C 6B|\" ; severity high; sid:100001)",
+    "final_score": 4,
+    "total_time": 89.339
+  },
+  {
+    "query": "Repérer une exfiltration de données via le protocole DNS",
+    "method": "agentic_rag",
+    "decision": {
+      "needs_retrieval": true,
+      "keyword_matches": 2,
+      "is_complex": true,
+      "llm_decision": "yes"
+    },
+    "iterations": [
+      {
+        "iteration": 1,
+        "retrieval_time": 0.048,
+        "docs_retrieved": 3,
+        "generation_time": 45.449,
+        "response": "alert tcp any => any port 853-905 (state UP); message \"Exfiltration de données sur le protocole DNS\" severity high; filter input eq proto dns; capture all packets inbound to source IP or destination MAC address of known malicious domains; replay last packet captured in reverse order until no more data is available from previous captures; analyze traffic using custom analysis rules such as detecting specific keywords related to data leakage or malware transmission through DNS requests. If detected, trigger an alarm indicating potential unauthorized access attempts based on identified patterns within your network's activity logs. This approach helps you identify suspicious activities that could indicate external threats exploiting vulnerabilities in your system infrastructure during communication over this critical layer of internet connectivity. Ensure regular updates and maintenance of security policies and configurations across different systems involved in handling sensitive information exchange between internal networks and public web services like Google Cloud Platform, Amazon Web Services etc., which can significantly enhance overall cybersecurity posture against advanced persistent threat actors targeting organizations' confidential data at",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 2,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": true,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 2,
+        "retrieval_time": 0.046,
+        "docs_retrieved": 4,
+        "generation_time": 30.381,
+        "response": "alert dns $LOCAL_NET any -> any port(8) (msg=\"Exfiltration data detected\" severity high);",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 1,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": false,
+            "has_content": false
+          }
+        }
+      },
+      {
+        "iteration": 3,
+        "retrieval_time": 0.046,
+        "docs_retrieved": 5,
+        "generation_time": 39.215,
+        "response": "alert dns any -> any port(53) (msg=\"Exfiltration of data detected\" severity high);",
+        "evaluation": {
+          "is_sufficient": false,
+          "quality_score": 1,
+          "checks": {
+            "starts_with_alert": true,
+            "has_msg": false,
+            "has_sid": false,
+            "has_protocol": false,
+            "has_content": false
+          }
+        }
+      }
+    ],
+    "total_iterations": 3,
+    "response": "alert dns any -> any port(53) (msg=\"Exfiltration of data detected\" severity high);",
+    "final_score": 1,
+    "total_time": 120.279
+  }
+]

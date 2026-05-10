@@ -68,6 +68,9 @@ Le dataset contient **50 règles Snort**, couvrant une large variété d'attaque
 | Longueur moyenne des descriptions | 7 mots |
 | Longueur moyenne des règles | 136 caractères |
 
+<img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/fa8075a2-48e8-4b0d-a039-2315ae6e1f65" />
+
+
 Le protocole TCP domine largement le dataset (39 entrées sur 50), avec une concentration forte sur les sévérités `critical` (12 entrées TCP) et `medium` (14 entrées TCP).
 
 ---
@@ -122,6 +125,8 @@ Boucle itérative (max 3 itérations), k variable (3→4→5), auto-évaluation 
 | RAG Hybride | 0.0693 | 0.2535 | 0.0883 | 0.2328 | 2.0 / 5 | 29.5s |
 | Baseline (No RAG) | 0.0086 | 0.1148 | 0.0425 | 0.1148 | 0.4 / 5 | 4.1s |
 
+<img width="2674" height="1517" alt="image" src="https://github.com/user-attachments/assets/6bb239b8-e872-485a-9404-747a948b27c9" />
+
 > Métriques calculées sur 5 requêtes × 7 architectures = 35 évaluations. Ground truth : règles Snort de référence rédigées manuellement.
 
 ### Progression du critère `sid` à travers les architectures
@@ -139,6 +144,10 @@ Boucle itérative (max 3 itérations), k variable (3→4→5), auto-évaluation 
 ## 🖥️ Interface Gradio
 
 Le notebook `10_evaluation.ipynb` lance une interface web permettant de tester toutes les architectures en temps réel.
+
+<img width="1894" height="937" alt="image" src="https://github.com/user-attachments/assets/e3686440-37ca-4c41-9bf2-9ecba54ebc4e" />
+<img width="1874" height="665" alt="image" src="https://github.com/user-attachments/assets/b59b1bc4-7712-4cec-92c6-03296494d310" />
+
 
 ```
 http://localhost:7862
@@ -165,9 +174,8 @@ python -m venv .venv
 .venv\Scripts\activate        # Windows
 # source .venv/bin/activate   # Linux/macOS
 
-# Installer les dépendances
-pip install faiss-cpu sentence-transformers transformers accelerate torch
-pip install rank-bm25 networkx pandas matplotlib seaborn gradio rouge-score nltk
+# Installer les dépendances qui existent dans chaque notebook
+pip install faiss-cpu sentence-transformers transformers accelerate torch ...
 ```
 
 Exécuter les notebooks dans l'ordre : `01` → `02` → `03` → … → `10`.

@@ -57,7 +57,7 @@ Devoir3/
 
 ## 🗄️ Dataset
 
-Le dataset contient **50 règles Snort** annotées manuellement, couvrant une large variété d'attaques réseau.
+Le dataset contient **50 règles Snort**, couvrant une large variété d'attaques réseau.
 
 | Propriété | Valeur |
 |---|---|
